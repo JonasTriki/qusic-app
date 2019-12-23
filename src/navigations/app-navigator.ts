@@ -10,6 +10,9 @@ const TabNavigatorConfig = {
 const RouteConfigs = {
   SelectGroup: {
     screen: SelectGroupScreen,
+    navigationOptions: {
+      header: null,
+    },
   },
 };
 

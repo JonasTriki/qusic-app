@@ -15,6 +15,7 @@ module.exports = {
           '.jsx',
           '.js',
           '.json',
+          '.png',
         ],
         alias: {
           _assets: './src/assets',
