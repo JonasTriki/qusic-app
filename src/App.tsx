@@ -1,8 +1,6 @@
 import React from 'react';
-import Splash from './scenes/splash';
+import Navigator from '_navigations';
 
-const App = () => (
-  <Splash />
-);
+const App = () => <Navigator />;
 
 export default App;
