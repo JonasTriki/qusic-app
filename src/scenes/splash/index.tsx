@@ -5,24 +5,17 @@ import {useNavigation} from '_hooks';
 import {Colors} from '_styles';
 
 import logoNoBg from '_assets/images/logo_white_no_bg.png';
+import {location} from '_utils';
 
 const Splash: FC = () => {
   const navigation = useNavigation();
 
-  const performTimeConsumingTask = async () =>
-    new Promise(resolve =>
-      setTimeout(() => {
-        resolve('result');
-      }, 2000),
-    );
-
   useEffect(() => {
     (async () => {
-      const data = await performTimeConsumingTask();
+      const locationPermissionGranted = await location.requestLocationPermission();
 
-      if (data !== null) {
-        navigation.navigate('SelectGroup');
-      }
+      // Navigate to select group with our result
+      navigation.navigate('SelectGroup', {locationPermissionGranted});
     })();
   }, [navigation]);
 

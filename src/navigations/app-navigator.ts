@@ -1,21 +1,32 @@
 import {createStackNavigator} from 'react-navigation-stack';
 
-import SelectGroupScreen from '../scenes/select-group';
+import {
+  CreateGroup as CreateGroupScreen,
+  SelectGroup as SelectGroupScreen,
+} from '_scenes';
 
-const TabNavigatorConfig = {
-  initialRouteName: 'SelectGroup',
-  header: null,
-};
-
-const RouteConfigs = {
-  SelectGroup: {
-    screen: SelectGroupScreen,
-    navigationOptions: {
-      header: null,
+const AppNavigator = createStackNavigator(
+  {
+    SelectGroup: {
+      screen: SelectGroupScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    CreateGroup: {
+      screen: CreateGroupScreen,
+      navigationOptions: {
+        title: 'Create a new group',
+        headerStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+      },
     },
   },
-};
-
-const AppNavigator = createStackNavigator(RouteConfigs, TabNavigatorConfig);
+  {
+    initialRouteName: 'SelectGroup',
+  },
+);
 
 export default AppNavigator;

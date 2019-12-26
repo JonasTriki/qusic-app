@@ -1,4 +1,5 @@
+import CreateGroup from './create-group';
 import Splash from './splash';
 import SelectGroup from './select-group';
 
-export {Splash, SelectGroup};
+export {CreateGroup, Splash, SelectGroup};

@@ -19,11 +19,13 @@ module.exports = {
         ],
         alias: {
           _assets: './src/assets',
+          _components: './src/components',
           _navigations: './src/navigations',
           _scenes: './src/scenes',
           _hooks: './src/hooks',
           _styles: './src/styles',
           _utils: './src/utils',
+          _config: './src/config',
         },
       },
     ],
