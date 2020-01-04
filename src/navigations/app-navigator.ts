@@ -3,6 +3,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import {
   CreateGroup as CreateGroupScreen,
   SelectGroup as SelectGroupScreen,
+  Main as MainScreen,
 } from '_scenes';
 
 const AppNavigator = createStackNavigator(
@@ -21,6 +22,12 @@ const AppNavigator = createStackNavigator(
           elevation: 0,
           shadowOpacity: 0,
         },
+      },
+    },
+    Main: {
+      screen: MainScreen,
+      navigationOptions: {
+        header: null,
       },
     },
   },

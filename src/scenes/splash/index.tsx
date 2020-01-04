@@ -1,18 +1,24 @@
 import React, {FC, useEffect} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
+import {auth} from '_firebase';
 
 import {useNavigation} from '_hooks';
 import {Colors} from '_styles';
+import {location} from '_utils';
 
 import logoNoBg from '_assets/images/logo_white_no_bg.png';
-import {location} from '_utils';
 
 const Splash: FC = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
+      // Grand location permission
       const locationPermissionGranted = await location.requestLocationPermission();
+
+      // Sign in to Firebase
+      // TODO: Create a user entry under 'users' in db.
+      await auth().signInAnonymously();
 
       // Navigate to select group with our result
       navigation.navigate('SelectGroup', {locationPermissionGranted});

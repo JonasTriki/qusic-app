@@ -1,2 +1,3 @@
 import * as location from './location';
-export {location};
+import * as distance from './distance';
+export {location, distance};

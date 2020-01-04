@@ -1,4 +1,4 @@
-import React, {FC, useState, useEffect} from 'react';
+import React, {FC, useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,10 @@ import {useForm} from 'react-hook-form';
 
 import {useNavigation} from '_hooks';
 import {Colors, Typography, Spacing} from '_styles';
+import {location} from '_utils';
+import {auth} from '_firebase';
+import {createGroup} from '_endpoints';
+
 import {padding, margin} from 'styles/mixins';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
@@ -18,22 +22,61 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 interface FormData {
   groupName: string;
-  groupPIN: string;
+  groupPassword: string;
 }
 
 const CreateGroup: FC = () => {
   const navigation = useNavigation();
+  const groupNameRef = useRef<TextInput>(null);
+  const groupPasswordRef = useRef<TextInput | null>(null);
+
   const {register, setValue, handleSubmit, reset, errors} = useForm<FormData>();
   const [loading, setLoading] = useState<boolean>(false);
   const [spin] = useState(new Animated.Value(0));
 
   const onSubmit = (data: FormData) => {
+    location.getCurrentPosition(
+      async position => {
+        const user = auth().currentUser;
+        if (user) {
+          const res = await createGroup(
+            data.groupName,
+            position.coords.latitude,
+            position.coords.longitude,
+            user.uid,
+            data.groupPassword || null,
+          );
+          if (res && res.status === 200) {
+            // TODO: Add navigation params (group id)
+            navigation.navigate('Main');
+          } else {
+            // TODO: Handle error
+          }
+        } else {
+          // TODO: Handle error
+        }
+      },
+      error => {
+        // TODO: Handle error
+        console.log(
+          'Error fetching user position during group creation',
+          error,
+        );
+      },
+    );
     console.log('Submitted data', data);
     setLoading(!loading);
     reset();
   };
 
   const AnimatedSpinner = Animated.createAnimatedComponent(FontAwesome5);
+
+  // Focus group name input on load
+  useEffect(() => {
+    if (groupNameRef.current) {
+      groupNameRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     Animated.loop(
@@ -46,6 +89,11 @@ const CreateGroup: FC = () => {
     ).start();
   }, [spin]);
 
+  useEffect(() => {
+    register({name: 'groupName'}, {required: true});
+    register({name: 'groupPassword'});
+  }, [register]);
+
   return (
     <>
       <View style={styles.container}>
@@ -54,9 +102,13 @@ const CreateGroup: FC = () => {
           <TextInput
             style={styles.textInput}
             returnKeyType="next"
-            ref={() => register({name: 'groupName'}, {required: true})}
+            ref={groupNameRef}
             onChangeText={text => setValue('groupName', text, true)}
-            onSubmitEditing={() => {}}
+            onSubmitEditing={() => {
+              if (groupPasswordRef.current) {
+                groupPasswordRef.current.focus();
+              }
+            }}
           />
           {errors.groupName && (
             <Text style={styles.requiredField}>This is required</Text>
@@ -68,10 +120,11 @@ const CreateGroup: FC = () => {
           <TextInput
             style={styles.textInput}
             returnKeyType="done"
-            ref={() => register({name: 'groupPIN'}, {required: true})}
-            onChangeText={text => setValue('groupPIN', text, true)}
+            ref={groupPasswordRef}
+            onChangeText={text => setValue('groupPassword', text, true)}
+            onSubmitEditing={() => handleSubmit(onSubmit)}
           />
-          {errors.groupPIN && (
+          {errors.groupPassword && (
             <Text style={styles.requiredField}>This is required</Text>
           )}
         </View>

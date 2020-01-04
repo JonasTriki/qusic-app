@@ -21,11 +21,11 @@ DerivedData
 project.xcworkspace
 
 # Android/IntelliJ
-build/
-.idea
-.gradle
-local.properties
-*.iml
+android/build/
+android/.idea
+android/.gradle
+android/local.properties
+android/*.iml
 
 # Visual Studio Code
 .vscode/
@@ -59,3 +59,6 @@ buck-out/
 
 # Environment variables
 .env
+
+# Firebase config
+src/firebase/config.ts
