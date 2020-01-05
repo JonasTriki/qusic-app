@@ -32,6 +32,10 @@ async function createRequest<T>(
   return response;
 }
 
+interface CreateGroupResponse {
+  groupId: string;
+}
+
 export function createGroup(
   name: string,
   latitude: number,
@@ -39,11 +43,15 @@ export function createGroup(
   hostUserId: string,
   password: string | null,
 ) {
-  return createRequest<ApiResponse>('POST', '/groups/create', {
-    name,
-    latitude,
-    longitude,
-    hostUserId,
-    password,
-  });
+  return createRequest<ApiResponse<CreateGroupResponse, string>>(
+    'POST',
+    '/groups/create',
+    {
+      name,
+      latitude,
+      longitude,
+      hostUserId,
+      password,
+    },
+  );
 }

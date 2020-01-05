@@ -47,8 +47,8 @@ const CreateGroup: FC = () => {
             data.groupPassword || null,
           );
           if (res && res.status === 200) {
-            // TODO: Add navigation params (group id)
-            navigation.navigate('Main');
+            const {groupId} = res.data.data;
+            navigation.navigate('Main', {groupId});
           } else {
             // TODO: Handle error
           }
