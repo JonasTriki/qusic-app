@@ -174,11 +174,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>react-native-config.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>react-native-geolocation.xcscheme</key>
 		<dict>
 			<key>isShown</key>

@@ -17,7 +17,6 @@ const Splash: FC = () => {
       const locationPermissionGranted = await location.requestLocationPermission();
 
       // Sign in to Firebase
-      // TODO: Create a user entry under 'users' in db.
       await auth().signInAnonymously();
 
       // Navigate to select group with our result

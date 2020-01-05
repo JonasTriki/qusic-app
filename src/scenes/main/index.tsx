@@ -1,19 +1,5 @@
-import React, {FC} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import Queue from './queue';
+import Search from './search';
+import GroupInfo from './group-info';
 
-const Main: FC = () => {
-  return (
-    <View style={styles.container}>
-      <Text>Main screen</Text>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flex: 1,
-  },
-});
-
-export default Main;
+export {Queue, Search, GroupInfo};

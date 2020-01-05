@@ -57,8 +57,8 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 
-# Environment variables
-.env
+# App config
+src/config.ts
 
 # Firebase config
 src/firebase/config.ts
