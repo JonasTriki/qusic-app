@@ -2,6 +2,7 @@ import Splash from './splash';
 
 import CreateGroup from './create-group';
 import SelectGroup from './select-group';
+import JoinGroup from './join-group';
 
 import {
   Queue as MainQueueTab,
@@ -13,6 +14,7 @@ export {
   Splash,
   CreateGroup,
   SelectGroup,
+  JoinGroup,
   MainQueueTab,
   MainSearchTab,
   MainGroupInfoTab,

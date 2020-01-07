@@ -9,16 +9,15 @@ import {
 } from 'react-native';
 import {useForm} from 'react-hook-form';
 
-import {useNavigation} from '_hooks';
-import {Colors, Typography, Spacing} from '_styles';
-import {location} from '_utils';
-import {auth} from '_firebase';
-import {createGroup} from '_endpoints';
-
-import {padding, margin} from 'styles/mixins';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
+import {useNavigation} from '_hooks';
+import {Colors, Typography, Spacing, Mixins} from '_styles';
+import {location, navigation as navigationUtil} from '_utils';
+import {auth} from '_firebase';
+import {createGroup} from '_endpoints';
 
 interface FormData {
   groupName: string;
@@ -48,7 +47,7 @@ const CreateGroup: FC = () => {
           );
           if (res && res.status === 200) {
             const {groupId} = res.data.data;
-            navigation.navigate('Main', {groupId});
+            navigationUtil.navigateClearStack(navigation, 'Main', {groupId});
           } else {
             // TODO: Handle error
           }
@@ -161,17 +160,17 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flex: 1,
-    ...padding(Spacing.SCALE_16),
+    ...Mixins.padding(Spacing.SCALE_16),
   },
   textInputWrapper: {
-    ...margin(Spacing.SCALE_4, 0, Spacing.SCALE_16, 0),
+    ...Mixins.margin(Spacing.SCALE_4, 0, Spacing.SCALE_16, 0),
   },
   textInput: {
     borderWidth: 1,
     borderColor: Colors.GRAY_LIGHT,
     borderRadius: Spacing.SCALE_4,
     fontSize: Typography.FONT_SIZE_16,
-    ...padding(Spacing.SCALE_8),
+    ...Mixins.padding(Spacing.SCALE_8),
   },
   requiredField: {
     color: Colors.ALERT,
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     backgroundColor: Colors.PRIMARY,
-    ...padding(Spacing.SCALE_16),
+    ...Mixins.padding(Spacing.SCALE_16),
   },
   submitButtonText: {
     color: Colors.WHITE,

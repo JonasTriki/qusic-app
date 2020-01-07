@@ -3,10 +3,10 @@ import {View, Text, StyleSheet, ListRenderItemInfo} from 'react-native';
 import {GeoPosition} from 'react-native-geolocation-service';
 import ActionButton from 'react-native-action-button';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Map} from '_components';
-import {location, distance} from '_utils';
+import {location, distance, navigation as navigationUtil} from '_utils';
 import {Group} from '_models';
 import {firestore, refs} from '_firebase';
 import {useNavigation} from '_hooks';
@@ -18,12 +18,15 @@ interface SelectGroupParams {
 
 const SelectGroup: FC = () => {
   const navigation = useNavigation<SelectGroupParams>();
+
+  // TODO: Move from param to global redux
   const locationPermissionGranted = navigation.getParam<
     'locationPermissionGranted'
   >('locationPermissionGranted');
 
   const [position, setPosition] = useState<GeoPosition | null>(null);
   const [groups, setGroups] = useState<Group[] | null>(null);
+  console.log('Current position', locationPermissionGranted);
 
   // Listen for position
   useEffect(() => {
@@ -34,9 +37,7 @@ const SelectGroup: FC = () => {
       // TODO: Handle error
       console.log('Error when listening for position', error);
     });
-    return () => {
-      stopListening();
-    };
+    return () => stopListening();
   }, [locationPermissionGranted]);
 
   // Listen for nearby groups
@@ -45,7 +46,7 @@ const SelectGroup: FC = () => {
       return;
     }
     const {latitude, longitude} = position.coords;
-    refs.groups
+    const cancelSnapshotListener = refs.groups
       .near({
         center: new firestore.GeoPoint(latitude, longitude),
         radius: 10000,
@@ -63,7 +64,20 @@ const SelectGroup: FC = () => {
           console.log('GeoQuery error', geoError);
         },
       );
+    return () => cancelSnapshotListener();
   }, [position]);
+
+  const joinGroupBtnClick = (group: Group) => {
+    // TODO: Encrypt password in backend maybe?
+    if (group.password) {
+      navigation.navigate('JoinGroup');
+    } else {
+      // TODO: Perform api call to join group
+      navigationUtil.navigateClearStack(navigation, 'Main', {
+        groupId: group.id,
+      });
+    }
+  };
 
   const createGroupBtnClick = () => {
     navigation.navigate('CreateGroup');
@@ -84,8 +98,9 @@ const SelectGroup: FC = () => {
   ) => {
     return (
       <View style={styles.groupItemInfoEntry}>
-        <FontAwesome5
+        <Icon
           name={iconName}
+          size={Spacing.SCALE_16}
           color={groupDistance < 1000 ? Colors.PRIMARY : Colors.GRAY_DARK}
         />
         <Text
@@ -105,7 +120,8 @@ const SelectGroup: FC = () => {
       <TouchableOpacity
         activeOpacity={0.5}
         style={styles.groupItem}
-        disabled={item.distance >= 1000}>
+        disabled={item.distance >= 1000}
+        onPress={() => joinGroupBtnClick(info.item)}>
         <View style={styles.groupItemInfo}>
           <Text
             style={{
@@ -116,12 +132,12 @@ const SelectGroup: FC = () => {
           </Text>
           <View style={styles.groupItemInfoBottom}>
             {renderItemInfoEntry(
-              'map-marker-alt',
+              'map-marker',
               distance.convert(item.distance),
               item.distance,
             )}
             {renderItemInfoEntry(
-              'users',
+              'account-multiple',
               item.devices.length.toString(),
               item.distance,
             )}
@@ -138,27 +154,27 @@ const SelectGroup: FC = () => {
     );
   };
 
-  const renderGroupListHeader = () => {
-    return <Text style={styles.selectGroupTitle}>Select a group to join</Text>;
-  };
-
   const renderSeparator = () => {
     return <View style={styles.separator} />;
   };
 
   return (
     <View style={styles.container}>
-      <Map style={styles.map} />
+      <Map style={styles.map} groups={groups} />
       <View style={styles.selectGroup}>
         {groups !== null ? (
           groups.length > 0 ? (
-            <FlatList
-              data={groups.sort((a, b) => a.distance - b.distance)}
-              renderItem={renderItem}
-              ListHeaderComponent={renderGroupListHeader}
-              ItemSeparatorComponent={renderSeparator}
-              keyExtractor={item => item.id}
-            />
+            <>
+              <Text style={styles.selectGroupTitle}>
+                Select a group to join
+              </Text>
+              <FlatList
+                data={groups.sort((a, b) => a.distance - b.distance)}
+                renderItem={renderItem}
+                ItemSeparatorComponent={renderSeparator}
+                keyExtractor={item => item.id}
+              />
+            </>
           ) : (
             renderListInfo('No groups near you')
           )

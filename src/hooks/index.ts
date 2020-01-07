@@ -1,3 +1,3 @@
-import useNavigation from './useNavigation';
+import useNavigation, {NavigationProp} from './useNavigation';
 
-export {useNavigation};
+export {useNavigation, NavigationProp};

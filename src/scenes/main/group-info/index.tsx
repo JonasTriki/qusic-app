@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import {Colors} from '_styles';
 
 const GroupInfo: FC = () => {
   return (
@@ -11,6 +12,7 @@ const GroupInfo: FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: Colors.WHITE,
     display: 'flex',
     flex: 1,
   },

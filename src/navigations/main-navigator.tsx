@@ -1,6 +1,6 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {MainQueueTab, MainSearchTab, MainGroupInfoTab} from '_scenes';
 import {Colors, Spacing} from '_styles';
@@ -24,11 +24,7 @@ const MainNavigator = createMaterialBottomTabNavigator(
           iconName = 'account-multiple';
         }
         return (
-          <MaterialCommunityIcon
-            name={iconName}
-            size={Spacing.SCALE_16}
-            color={tintColor}
-          />
+          <Icon name={iconName} size={Spacing.SCALE_22} color={tintColor} />
         );
       },
     }),
