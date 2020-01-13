@@ -4,14 +4,11 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Animated,
-  Easing,
+  ActivityIndicator,
 } from 'react-native';
 import {useForm} from 'react-hook-form';
 
 import {TouchableOpacity} from 'react-native-gesture-handler';
-
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import {useNavigation} from '_hooks';
 import {Colors, Typography, Spacing, Mixins} from '_styles';
@@ -31,19 +28,22 @@ const CreateGroup: FC = () => {
 
   const {register, setValue, handleSubmit, reset, errors} = useForm<FormData>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [spin] = useState(new Animated.Value(0));
 
   const onSubmit = (data: FormData) => {
+    setLoading(true);
+    reset();
     location.getCurrentPosition(
       async position => {
         const user = auth().currentUser;
         if (user) {
+          const idToken = await user.getIdToken(true);
           const res = await createGroup(
             data.groupName,
             position.coords.latitude,
             position.coords.longitude,
             user.uid,
             data.groupPassword || null,
+            idToken,
           );
           if (res && res.status === 200) {
             const {groupId} = res.data.data;
@@ -54,8 +54,10 @@ const CreateGroup: FC = () => {
         } else {
           // TODO: Handle error
         }
+        setLoading(false);
       },
       error => {
+        setLoading(false);
         // TODO: Handle error
         console.log(
           'Error fetching user position during group creation',
@@ -63,12 +65,7 @@ const CreateGroup: FC = () => {
         );
       },
     );
-    console.log('Submitted data', data);
-    setLoading(!loading);
-    reset();
   };
-
-  const AnimatedSpinner = Animated.createAnimatedComponent(FontAwesome5);
 
   // Focus group name input on load
   useEffect(() => {
@@ -76,17 +73,6 @@ const CreateGroup: FC = () => {
       groupNameRef.current.focus();
     }
   }, []);
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(spin, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-    ).start();
-  }, [spin]);
 
   useEffect(() => {
     register({name: 'groupName'}, {required: true});
@@ -114,7 +100,7 @@ const CreateGroup: FC = () => {
           )}
         </View>
 
-        <Text>Group PIN (optional)</Text>
+        <Text>Group password (optional)</Text>
         <View style={styles.textInputWrapper}>
           <TextInput
             style={styles.textInput}
@@ -133,21 +119,7 @@ const CreateGroup: FC = () => {
         style={styles.submitButton}
         onPress={handleSubmit(onSubmit)}>
         {loading ? (
-          <AnimatedSpinner
-            name={'spinner'}
-            size={Spacing.SCALE_22}
-            color={Colors.WHITE}
-            style={{
-              transform: [
-                {
-                  rotate: spin.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0deg', '360deg'],
-                  }),
-                },
-              ],
-            }}
-          />
+          <ActivityIndicator size="small" color={Colors.WHITE} />
         ) : (
           <Text style={styles.submitButtonText}>Create group</Text>
         )}

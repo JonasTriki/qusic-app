@@ -17,14 +17,13 @@ async function createRequest<T>(requestConfig: RequestConfig) {
     const axiosParams: AxiosRequestConfig = {
       method,
       url: config.API_BASE_URL + endpoint,
-      data: data,
+      data,
       withCredentials: true,
       headers,
     };
 
     response = await axios.request<T>(axiosParams);
   } catch (error) {
-    console.log('axios error', error);
     if (error.response) {
       // Non-2xx status code received
       response = error.response;
@@ -46,6 +45,7 @@ export function createGroup(
   longitude: number,
   hostUserId: string,
   password: string | null,
+  idToken: string,
 ) {
   return createRequest<ApiResponse<CreateGroupResponse, string>>({
     method: 'POST',
@@ -56,6 +56,29 @@ export function createGroup(
       longitude,
       hostUserId,
       password,
+    },
+    headers: {
+      Authorization: `JWT ${idToken}`,
+    },
+  });
+}
+
+type JoinGroupResponse = string;
+
+export function joinGroup(
+  groupId: string,
+  password: string | null,
+  idToken: string,
+) {
+  return createRequest<ApiResponse<JoinGroupResponse, string>>({
+    method: 'POST',
+    endpoint: '/groups/join',
+    data: {
+      groupId,
+      password,
+    },
+    headers: {
+      Authorization: `JWT ${idToken}`,
     },
   });
 }

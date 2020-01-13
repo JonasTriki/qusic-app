@@ -70,7 +70,7 @@ const SelectGroup: FC = () => {
   const joinGroupBtnClick = (group: Group) => {
     // TODO: Encrypt password in backend maybe?
     if (group.password) {
-      navigation.navigate('JoinGroup');
+      navigation.navigate('JoinGroup', {groupId: group.id});
     } else {
       // TODO: Perform api call to join group
       navigationUtil.navigateClearStack(navigation, 'Main', {

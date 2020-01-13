@@ -25,7 +25,7 @@ android/build/
 android/.idea
 android/.gradle
 android/local.properties
-android/*.iml
+android/**/*.iml
 
 # Visual Studio Code
 .vscode/
