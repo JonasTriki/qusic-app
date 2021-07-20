@@ -16,7 +16,7 @@
     "geofirestore": "^3.3.1",
     "react": "16.9.0",
     "react-hook-form": "^4.0.1",
-    "react-native": "0.61.5",
+    "react-native": "0.62.3",
     "react-native-action-button": "^2.8.5",
     "react-native-geolocation-service": "^3.1.0",
     "react-native-gesture-handler": "^1.5.2",
